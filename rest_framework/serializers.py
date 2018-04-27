@@ -989,6 +989,12 @@ class ModelSerializer(Serializer):
         Return the dict of field names -> field instances that should be
         used for `self.fields` when instantiating the serializer.
         """
+        try:
+            # return copy.deepcopy(self.__class__.__dict__['_field_table'])
+            return self.__class__.__dict__['_field_table']
+        except KeyError:
+            pass
+
         if self.url_field_name is None:
             self.url_field_name = api_settings.URL_FIELD_NAME
 
@@ -1055,6 +1061,8 @@ class ModelSerializer(Serializer):
 
         # Add in any hidden fields.
         fields.update(hidden_fields)
+
+        self.__class__._field_table = fields
 
         return fields
 
